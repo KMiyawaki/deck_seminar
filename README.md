@@ -239,9 +239,15 @@ roslaunch oit_navigation_minibot_light_01 stage_navigation.launch
 
 ## VSCodeとの連携
 
-`VSCode`の拡張機能から`Docker`を選択してインストールしてください。
+`VSCode`の拡張機能から`Docker`、`Dev Containers`、`Remote Development`を選択してインストールしてください。
 
 ![2022-12-17_170506.png](./images/2022-12-17_170506.png)
+
+![2022-12-22_150325.png](./images/2022-12-22_150325.png)
+
+![2022-12-22_151530.png](./images/2022-12-22_151530.png)
+
+インストール後は`VSCode`を一旦再起動してください。
 
 [起動](#起動)の項目で実施した`docker-compose up`が正常に実行され、WEBブラウザで[http://127.0.0.1:6080/vnc.html](http://127.0.0.1:6080/vnc.html)に接続可能なことを確認してから、次の手順に移ってください。
 
@@ -250,7 +256,7 @@ roslaunch oit_navigation_minibot_light_01 stage_navigation.launch
 ![2022-12-17_170846.png](./images/2022-12-17_170846.png)
 
 `ros_lectures_melodic_202302`があるはずですので、それをクリックしてください。  
-さらに、`Open Folder in Container`をクリックしてください。
+さらに、`Attach to Container`をクリックしてください。
 
 ![2022-12-17_170946.png](./images/2022-12-17_170946.png)
 
