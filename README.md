@@ -18,6 +18,7 @@
     - [talkerとlistener](#talkerとlistener)
     - [ロボットシミュレータ](#ロボットシミュレータ)
   - [VSCodeとの連携](#vscodeとの連携)
+  - [VNCクライアントの利用（オプション）](#vncクライアントの利用オプション)
 
 ## 環境構築に関する質問フォーム
 
@@ -283,7 +284,6 @@ roslaunch oit_navigation_minibot_light_01 stage_navigation.launch
 `Ctrl+Shift+@`の同時押しを繰り返せばターミナルは複数個開くことができます。  
 不要なターミナルは`exit`コマンド、もしくはゴミ箱のボタンを押すことで閉じることができます。
 
-![2022-12-22_114353.png](./images/2022-12-22_114353.png)
 
 練習のために、`roscore`、`rosrun beginner_tutorials talker.py`、`rosrun beginner_tutorials listener.py`を`VSCode`から実行してみてください。
 
@@ -294,3 +294,35 @@ roslaunch oit_navigation_minibot_light_01 stage_navigation.launch
 1. WEBブラウザ上の`Linux`でシミュレータを起動する。
 2. `VSCode`を`Linux`に接続し、`Python`コード編集を行う。
 3. `VSCode`のターミナルから`Python`コードを実行する。
+
+## VNCクライアントの利用（オプション）
+
+前項までの環境でセミナーの受講は可能ですが、VNCクライアントソフトを入れることで少し作業がしやすくなります。
+
+1. コピー＆ペーストがダイレクトにできるようになる。
+2. `Linux`側ターミナルで`Shift+Ctrl+T`によりタブを増やすことができる。
+   - １つのターミナルウィンドウに複数のコマンド実行用のタブを作成できるのでデスクトップ画面がすっきりする。
+
+VNCクライアントソフトには様々なものがありますが、ここでは[Real VNC](https://www.realvnc.com/en/connect/download/viewer/)を使います。リンクからダウンロードし、インストールしてください。
+
+インストール後、`VNC Viewer`を実行し、接続先に`127.0.0.1:5901`を入力してエンターを押してください。
+
+`Unencrypted Connection`の警告が出ますが`Don't warn me`にチェックを入れて`Continue`をクリックしてください。
+
+![2022-12-22_160731.png](./images/2022-12-22_160731.png)
+
+WEBブラウザのときと同じように`Linux`のデスクトップにアクセスできます。  
+ターミナルソフトを起動して`Shift+Ctrl+T`を押すと、ターミナル内でタブを作成することができます。
+ターミナルに`Windows`側からコピーしたコマンドを右クリックでペーストできます。
+
+![2022-12-22_161539.png](./images/2022-12-22_161539.png)
+
+`VNC Viewer`で接続した`Linux`デスクトップ表示の色数が少ない場合は、一旦`Linux`を「X」（バツボタン）で閉じ、`VNC Viewer`の下記画面で`127.0.0.1:5901`の接続先アイコンを右クリックし、`Properties`の画面を開いてください。
+
+![2022-12-22_161354.png](./images/2022-12-22_161354.png)
+
+`Options`の`Picture quality`を`HIGH`にして`OK`を押してください。  
+
+![2022-12-22_161431.png](./images/2022-12-22_161431.png)
+
+設定後、`127.0.0.1:5901`の接続先アイコンをダブルクリックして再接続してください。
