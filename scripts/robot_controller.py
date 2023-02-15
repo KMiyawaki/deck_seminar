@@ -15,15 +15,14 @@ class RobotController(object):
     def __init__(self):
         # 速度制御用
         # http://docs.ros.org/en/noetic/api/geometry_msgs/html/msg/Twist.html
-        # ★ トピック名'/cmd_vel'、型がTwistのパブリッシャを生成
+        # ★ トピック名'/cmd_vel'、型Twistのパブリッシャを生成する。
         self.pub_vel = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
         # 画像処理用
         # http://docs.ros.org/en/noetic/api/sensor_msgs/html/msg/Image.html
-        # ★ トピック名'/image_processing/result_image'、型Imageのパブリッシャを生成
-        self.pub_img = rospy.Publisher(
-            '/image_processing/result_image', Image, queue_size=10)
-        # ★ トピック名'/video_source/raw'、型Imageのサブスクライバを生成
-        # rospy.Subscriber('/video_source/raw', Image, self.image_cb)
+        # ★ トピック名'/image_processing/result_image'、型Imageのパブリッシャを生成する。
+        self.pub_img = rospy.Publisher('/image_processing/result_image', Image, queue_size=10)
+        # ★ トピック名 '/video_source/raw'、型 Image のサブスクライバを生成する。
+        # rospy.Subscriber('/video_source/raw', Image, self.image_cb) # ☆ 修正方法はセミナ中で説明します。
         self.cv_bridge = CvBridge()
         self.kernel = np.ones((5, 5), np.uint8)
 
@@ -33,30 +32,30 @@ class RobotController(object):
         rospy.loginfo('Executing ' + func)  # 実行中の関数名を表示する。
         rate = rospy.Rate(10)  # ループを10Hzで回す。
         # 前進
-        start_time = rospy.get_time()  # 現在時刻を取得する
+        start_time = rospy.get_time()  # 現在時刻を取得する。
         while rospy.get_time() - start_time < 2.0:  # 2秒間継続する。
-            vel = Twist()  # ★ Twist 型の変数 vel を定義する。ロボットへの速度指令が入る。
-            vel.linear.x = 0.25  # ★ 0.25m/sec で前進する指令を作成する。
+            vel = Twist()  # ★ Twist型の変数velを定義する。ロボットへの速度指令が入る。
+            vel.linear.x = 0.25  # ★ 0.25m／秒で前進する指令を作成する。
             self.pub_vel.publish(vel)  # ★ 速度指令をパブリッシュする。
             rate.sleep()  # ループを10Hzで回す。
         # 左旋回
-        start_time = rospy.get_time()  # 現在時刻を取得する
+        start_time = rospy.get_time()  # 現在時刻を取得する。
         while rospy.get_time() - start_time < 3.0:  # 3秒間継続する。
-            vel = Twist()  # ★ Twist 型の変数 vel を定義する。ロボットへの速度指令が入る。
-            vel.angular.z = math.radians(30)  # ★ 30度/sec で左旋回する指令を作成する。
+            vel = Twist()  # ★ Twist型の変数velを定義する。ロボットへの速度指令が入る。
+            vel.angular.z = math.radians(30)  # ★ 30度／秒で左旋回する指令を作成する。
             self.pub_vel.publish(vel)  # ★ 速度指令をパブリッシュする。
             rate.sleep()  # ループを10Hzで回す。
 
     def extract_color(self, cv_image_in, scale):
-        # 特定の色領域を抽出する
+        # 特定の色に当てはまる画素を抽出する。
         cv_image_in = cv2.resize(
-            cv_image_in, dsize=None, fx=scale, fy=scale)  # 画像を縮小
-        hsv = cv2.cvtColor(cv_image_in, cv2.COLOR_BGR2HSV)  # HSV 形式に変換
-        # ★ ここのパラメータを調整する
-        return cv2.inRange(hsv, (0, 40, 40), (40, 255, 255))
+            cv_image_in, dsize=None, fx=scale, fy=scale)  # 画像を縮小する。
+        hsv = cv2.cvtColor(cv_image_in, cv2.COLOR_BGR2HSV)  # HSV形式に変換する。
+        # ★ ここのパラメータを調整する。
+        return cv2.inRange(hsv, (0, 40, 40), (10, 255, 255))
 
     def control(self, iw, ih, tx, ty, tw, th):
-        # 色領域追従のために速度制御する
+        # 領域追従のために速度制御する。
         # iw, ih 画像の幅、高さ
         # tx, ty 追従対象の中心座標
         # tw, th 追従対象の幅、高さ
@@ -64,24 +63,25 @@ class RobotController(object):
         self.pub_vel.publish(vel)
 
     def image_cb(self, msg):
-        # 画像受信時に呼ばれる関数
-        scale = 0.25  # 画像を 1/4 に縮小して処理
+        # 画像受信時に呼ばれる関数。
+        scale = 0.25  # 画像を 1/4 に縮小して処理する。
         cv_image = self.cv_bridge.imgmsg_to_cv2(msg, "bgr8")
-        cv_result = self.extract_color(cv_image, scale)  # ★ 特定の色を抽出する。関数内のパラメータを調整する
-        cv_result, contours = self.detect_areas(cv_result, self.kernel)  # 抽出した領域ごとの輪郭を検出する
-        tx, ty, tw, th = self.tracking_target(cv_result, contours, 100)  # 輪郭を囲む矩形のうち、最も大きい矩形の中心とサイズを返す
+        cv_result = self.extract_color(cv_image, scale) # ★ 特定の色に当てはまる画素を抽出する。関数内のパラメータを調整する。
+        cv_result, contours = self.detect_areas(cv_result, self.kernel)  # 抽出した画素の塊の輪郭を検出する。
+        tx, ty, tw, th = self.tracking_target(cv_result, contours, 100)  # 輪郭を囲む矩形のうち、最も大きい矩形の中心とサイズを返す。
+                                                                         # 十分な大きさの矩形が無かった場合は-1, -1, -1, -1を返す。
         if tx > 0:
             self.control(cv_result.shape[1],
                          cv_result.shape[0], tx, ty, tw, th)  # ★ この関数の内部を実装する
         else:
-            self.stop()  # 追跡対象が無ければ止める
+            self.stop()  # 追跡対象が無ければ車体を止める。
         self.pub_img.publish(
             self.cv_bridge.cv2_to_imgmsg(cv_result, "mono8"))
 
     def spin(self):
-        # 一定時間ループする
+        # 一定時間ループする。
         rate = rospy.Rate(10)  # ループを10Hzで回す。
-        start_time = rospy.get_time()  # 現在時刻を取得する
+        start_time = rospy.get_time()  # 現在時刻を取得する。
         while rospy.get_time() - start_time < 120.0:  # 120秒間継続する。
             rate.sleep()
 
@@ -131,17 +131,17 @@ class RobotController(object):
 
 
 def main():
-    user_name = 'Taro Robot'  # ご自身のお名前に変更してください
+    user_name = 'Taro Robot'  # ご自身のお名前に変更してください。
     rospy.init_node('my_robot_controller')
-    rospy.loginfo(user_name)  # 受講者の情報を表示する
-    rospy.sleep(1)  # 起動直後は rospy.get_time が異常な値を返すことがあるので
+    rospy.loginfo(user_name)  # 受講者の情報を表示する。
+    rospy.sleep(1)  # 起動直後は rospy.get_time が異常な値を返すことがあるので。
     controller = RobotController()
     try:
         # テスト走行時
-        controller.test_run()
+        controller.test_run() # ☆ 修正方法はセミナ中で説明します。
         # 画像処理＋ロボット制御時
-        # controller.spin()
-        # controller.stop()
+        # controller.spin() # ☆ 修正方法はセミナ中で説明します。
+        # controller.stop() # ☆ 修正方法はセミナ中で説明します。
     except rospy.ROSInterruptException:
         pass
     rospy.loginfo('Finish ' + user_name)
