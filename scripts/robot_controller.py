@@ -14,11 +14,11 @@ from cv_bridge import CvBridge
 class RobotController(object):
     def __init__(self):
         # 速度制御用
-        # http://docs.ros.org/en/noetic/api/geometry_msgs/html/msg/Twist.html
+        # http://docs.ros.org/en/melodic/api/geometry_msgs/html/msg/Twist.html
         # ★ トピック名'/cmd_vel'、型Twistのパブリッシャを生成する。
         self.pub_vel = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
         # 画像処理用
-        # http://docs.ros.org/en/noetic/api/sensor_msgs/html/msg/Image.html
+        # http://docs.ros.org/en/melodic/api/sensor_msgs/html/msg/Image.html
         # ★ トピック名'/image_processing/result_image'、型Imageのパブリッシャを生成する。
         self.pub_img = rospy.Publisher('/image_processing/result_image', Image, queue_size=10)
         # ★ トピック名 '/video_source/raw'、型 Image のサブスクライバを生成する。
