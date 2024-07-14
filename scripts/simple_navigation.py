@@ -44,7 +44,7 @@ def main():
         rospy.loginfo('Waiting for the move_base action server to come up')
 
     rospy.loginfo('The server comes up')
-    goto_point(ac, 7, 3, math.radians(90))  # ★ 座標（7,3）に90度の向きで止まるようにナビゲーションする
+    goto_point(ac, 1.10, 0.1, math.radians(90))  # ★ 座標（1.10, 0.25）に90度の向きで止まるようにナビゲーションする
 
 
 if __name__ == '__main__':
